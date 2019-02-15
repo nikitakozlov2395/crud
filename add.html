@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+	
+	<form>
+		<input name="product" value="Beer">
+
+		<label><input type="checkbox" name="required" value="" checked>Required</label>
+		<label><input type="checkbox" name="purchased" value="" >Purchased</label>
+    <input type="button" id="handleDelete" value="Удалить">
+    <input type="button" id="handleUpdate" value="Изменить">
+
+		<input type="submit"> 
+	</form>
+
+	<ul class="listMessages">
+		
+	</ul>
+	
+	<script>
+		const form = document.querySelector('form')
+		form.addEventListener('submit', submitHandler)
+
+		function submitHandler(e) {
+  			e.preventDefault();
+
+  			const name = this.querySelector('[name="product"]');
+  			const required = this.querySelector('input[name="required"]');
+  			const purchased = this.querySelector('input[name=purchased]');
+
+        let updateId = 3;
+        handleUpdate.onclick = function() {
+          console.log('update')
+          axios.put(`/api/products/${updateId}`, {
+            name: name.value,
+            required: required.checked ? required.checked : false,
+            purchased: purchased.checked ? purchased.checked : false
+          })
+            .then((response) => {
+              console.log(response)
+            })
+            .catch((error) => {
+              console.log(error);
+          });
+        }
+
+        let numberId = 1;
+        handleDelete.onclick = function() {
+          console.log('click')
+          axios.delete(`/api/products/${numberId}`)
+            .then((response) => {
+              console.log(response)
+            })
+            .catch((error) => {
+              console.log(error);
+          });
+        }
+
+        axios.get('/api/products')
+          .then(function (response) {
+            console.log(response);
+        })
+          .catch(function (error) {
+            console.log(error);
+        });
+
+  			axios.post('/api/products/add', {
+    			name: name.value,
+    			required: required.checked ? required.checked : false,
+    			purchased: purchased.checked ? purchased.checked : false
+  			})
+  			.then((response) => {
+  				name.value = ''
+    			console.log(response);
+  			})
+  			.catch((error) => {
+    			console.log(error);
+  			});
+
+  		}
+
+	</script>
+
+  </body>
+</html>
